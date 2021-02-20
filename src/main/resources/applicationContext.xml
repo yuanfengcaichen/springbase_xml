@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="accountDao" class="club.codeqi.dao.impl.AccountDaoImpl"></bean>
+    <bean id="accountService" class="club.codeqi.service.impl.AccountServiceImpl">
+        <property name="accountDao" ref="accountDao"></property>
+    </bean>
+
+    <!--在对象实例化后调用init-method属性指定的方法，在对象销毁后调用destory-method属性指定的方法-->
+    <bean id="initbean" class="club.codeqi.Components.init_method_bean" init-method="initBean" destroy-method="destoryBean"></bean>
+</beans>
