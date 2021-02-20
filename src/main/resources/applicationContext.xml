@@ -8,6 +8,9 @@
         <property name="accountDao" ref="accountDao"></property>
     </bean>
 
-    <!--在对象实例化后调用init-method属性指定的方法，在对象销毁后调用destory-method属性指定的方法-->
+    <!-- scope属性设置对象是单例还是多例-->
+    <bean id="accountDao1" class="club.codeqi.dao.impl.AccountDaoImpl" scope="prototype"></bean>
+
+    <!--在对象实例化后调用init-method属性指定的方法，在对象销毁后调用destory-method属性指定的方法，仅对单例对象有效-->
     <bean id="initbean" class="club.codeqi.Components.init_method_bean" init-method="initBean" destroy-method="destoryBean"></bean>
 </beans>
