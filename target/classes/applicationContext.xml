@@ -1,15 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="url" value="jdbc:mysql://localhost:3306/jdbc_test"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="1qaz"></property>
+    </bean>
+
     <bean id="accountDao" class="club.codeqi.dao.impl.AccountDaoImpl"></bean>
     <bean id="accountService" class="club.codeqi.service.impl.AccountServiceImpl">
         <property name="accountDao" ref="accountDao"></property>
     </bean>
 
-    <bean id="accountDao1" class="club.codeqi.dao.impl.AccountDaoImpl"></bean>
+    <!--静态方法创建bean对象-->
+    <bean id="account1" factory-method="getAccount" class="club.codeqi.Components.staticfactory"></bean>
 
-    <!--在对象实例化后调用init-method属性指定的方法，在对象销毁后调用destory-method属性指定的方法-->
-    <bean id="initbean" class="club.codeqi.Components.init_method_bean" init-method="initBean" destroy-method="destoryBean" scope="prototype"></bean>
+    <!--对象方法创建bean对象-->
+    <bean id="targetfactory" class="club.codeqi.Components.targetfactory"></bean>
+    <bean id="account2" factory-bean="targetfactory" factory-method="getAccount"></bean>
+
+    <!-- scope属性设置对象是单例还是多例-->
+    <bean id="accountDao1" class="club.codeqi.dao.impl.AccountDaoImpl" scope="prototype"></bean>
+
+
+    <!--在对象实例化后调用init-method属性指定的方法，在对象销毁后调用destory-method属性指定的方法，仅对单例对象有效-->
+    <bean id="initbean" class="club.codeqi.Components.init_method_bean" init-method="initBean" destroy-method="destoryBean"></bean>
+
+    <!--构造方法注入-->
+    <bean id="contractBean" class="club.codeqi.Components.constractBean">
+        <constructor-arg name="name" value="this is name"></constructor-arg>
+        <constructor-arg name="sex" value="1"></constructor-arg>
+        <constructor-arg name="money" value="180.8"></constructor-arg>
+    </bean>
+
+    <!--set方法注入-->
+    <bean id="propertyBean" class="club.codeqi.Components.propertyBean">
+        <property name="mySet">
+            <array>
+                <value>array1</value>
+                <value>array2</value>
+                <value>array3</value>
+            </array>
+        </property>
+        <property name="mymap">
+            <map>
+                <entry key="key1" value="value1"></entry>
+                <entry key="key2" value="value2"></entry>
+            </map>
+        </property>
+        <property name="myArray">
+            <set>
+                <value>set1</value>
+                <value>set2</value>
+            </set>
+        </property>
+        <property name="myProperties">
+            <props>
+                <prop key="prokey1">prop_value1</prop>
+                <prop key="prokey2">prop_value2</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--lazy-init延迟加载-->
+    <bean id="lazyBean" class="club.codeqi.Components.lazyBean" lazy-init="true"></bean>
+
+    <!--FactoryBean-->
+    <bean id="accountFactorybean" class="club.codeqi.FactoryBeanPackage.AccountFactoryBean">
+        <property name="accountinfo" value="小李,1000,123456"></property>
+    </bean>
+
+    <!--全局后置处理器-->
+    <bean id="myBeanPostProcessor" class="club.codeqi.Components.MyBeanPostProcessor"></bean>
+
+
+    <!--Aop测试-->
+    <!--业务逻辑-->
+    <bean id="myService" class="club.codeqi.AOP.MyService"></bean>
+
+    <!--增强类-->
+    <bean id="enhance" class="club.codeqi.AOP.Enhance"></bean>
+
+    <!--Aop配置-->
+    <aop:config>
+        <!--配置切面（增强的类对象）-->
+        <aop:aspect id="myEnhance" ref="enhance">
+            <!--配置切点-->
+            <aop:pointcut id="pt1" expression="execution(public * club.codeqi.AOP.MyService.printService())"/>
+            <!--配置前置通知-->
+            <aop:before method="beforeMethod" pointcut="execution(public * club.codeqi.AOP.MyService.printService())"></aop:before>
+            <!--配置后置通知-->
+            <aop:after method="afterMethod" pointcut-ref="pt1"></aop:after>
+        </aop:aspect>
+    </aop:config>
 </beans>

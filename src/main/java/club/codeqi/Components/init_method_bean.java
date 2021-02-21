@@ -18,11 +18,11 @@ public class init_method_bean {
                 '}';
     }
     public void initBean(){
-        System.out.println("对象创建了");
+        System.out.println(" init_method_bean 对象创建了");
         this.name = "username";
         System.out.println(this.toString());
     }
     public void destoryBean(){
-        System.out.println("对象销毁了");
+        System.out.println(" init_method_bean 对象销毁了");
     }
 }
